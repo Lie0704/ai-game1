@@ -21,7 +21,6 @@ def start_game():
     st.session_state.current_index = 0
     st.session_state.score = 0
     st.session_state.submitted = False
-    st.session_state.selected_answer = None
     st.session_state.feedback = ""
     st.session_state.last_correct = False
 
@@ -57,49 +56,98 @@ def submit_answer():
     st.session_state.submitted = True
 
 
+def render_word_game():
+    st.title("📚 영단어 게임")
+    st.write("영단어의 뜻을 고르고, 점수를 올려보세요!")
+    st.caption("한 번에 8문제를 풀고 결과를 확인할 수 있어요.")
+
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        st.metric("현재 점수", f"{st.session_state.score}/{len(st.session_state.questions)}")
+    with col2:
+        st.metric("문제 번호", f"{st.session_state.current_index + 1}/{len(st.session_state.questions)}")
+
+    if st.button("새 게임 시작", use_container_width=True):
+        start_game()
+
+    if st.session_state.current_index < len(st.session_state.questions):
+        question = st.session_state.questions[st.session_state.current_index]
+
+        st.subheader(question["word"])
+        st.write(f"예문: {question['example']}")
+
+        options = build_options(question)
+        answer_key = f"answer_{st.session_state.current_index}"
+        st.radio("뜻을 고르세요", options=options, key=answer_key, index=None)
+
+        if not st.session_state.submitted:
+            if st.button("정답 확인", use_container_width=True):
+                submit_answer()
+        else:
+            if st.session_state.last_correct:
+                st.success(st.session_state.feedback)
+            else:
+                st.error(st.session_state.feedback)
+
+            if st.button("다음 문제", use_container_width=True):
+                st.session_state.current_index += 1
+                st.session_state.submitted = False
+    else:
+        st.balloons()
+        st.success(f"게임 끝! 총 {st.session_state.score}문제를 맞혐어요.")
+        st.write("다시 도전해 보세요!")
+        if st.button("다시 시작하기", use_container_width=True):
+            start_game()
+
+
+def render_bts_page():
+    st.title("🎤 BTS 소개")
+    st.write("BTS는 한국의 아주 유명한 음악 그룹입니다.")
+    st.write("그들은 춤, 노래, 메시지까지 모두 멋지게 보여줘요.")
+
+    st.subheader("BTS의 특징")
+    st.markdown(
+        "- 멋진 노래와 춤을 보여줘요.\n"
+        "- 친구들과 함께 성장하는 이야기를 담아요.\n"
+        "- 세계 많은 사람들에게 사랑받고 있어요."
+    )
+
+    st.subheader("멤버")
+    members = [
+        ("RM", "리더이자 랩을 맡아요."),
+        ("진", "부드러운 목소리로 노래해요."),
+        ("슈가", "재치 있는 랩과 멋진 표현을 해요."),
+        ("제이홉", "에너지 넘치는 춤과 노래를 보여줘요."),
+        ("지민", "유연한 춤과 강한 분위기를 보여줘요."),
+        ("뷔", "차분하면서도 특별한 매력을 보여줘요."),
+        ("정국", "높은 음역대와 열정적인 무대를 보여줘요."),
+    ]
+
+    for name, role in members:
+        st.write(f"- {name}: {role}")
+
+    st.subheader("대표곡")
+    songs = [
+        ("Dynamite", "밝고 신나는 느낌이 특징이에요."),
+        ("Butter", "달콤하고 귀여운 분위기의 노래예요."),
+        ("Spring Day", "감동적이고 따뜻한 느낌의 노래예요."),
+    ]
+
+    for song, description in songs:
+        st.write(f"- {song}: {description}")
+
+
 if "questions" not in st.session_state:
     start_game()
 
-st.set_page_config(page_title="영단어 게임", page_icon="📚")
-st.title("📚 중학생용 영단어 게임")
-st.write("영단어의 뜻을 고르고, 점수를 올려보세요!")
-st.caption("한 번에 8문제를 풀고 결과를 확인할 수 있어요.")
+st.set_page_config(page_title="영단어와 BTS", page_icon="📚")
+st.title("📚 영어 공부 + BTS")
+st.write("영단어 게임도 하고 BTS도 소개해 보세요!")
 
-col1, col2 = st.columns([1, 1])
-with col1:
-    st.metric("현재 점수", f"{st.session_state.score}/{len(st.session_state.questions)}")
-with col2:
-    st.metric("문제 번호", f"{st.session_state.current_index + 1}/{len(st.session_state.questions)}")
+word_tab, bts_tab = st.tabs(["📚 영단어 게임", "🎤 BTS 소개"])
 
-if st.button("새 게임 시작", use_container_width=True):
-    start_game()
+with word_tab:
+    render_word_game()
 
-if st.session_state.current_index < len(st.session_state.questions):
-    question = st.session_state.questions[st.session_state.current_index]
-
-    st.subheader(question["word"])
-    st.write(f"예문: {question['example']}")
-
-    options = build_options(question)
-    answer_key = f"answer_{st.session_state.current_index}"
-    st.radio("뜻을 고르세요", options=options, key=answer_key, index=None)
-
-    if not st.session_state.submitted:
-        if st.button("정답 확인", use_container_width=True):
-            submit_answer()
-    else:
-        if st.session_state.last_correct:
-            st.success(st.session_state.feedback)
-        else:
-            st.error(st.session_state.feedback)
-
-        if st.button("다음 문제", use_container_width=True):
-            st.session_state.current_index += 1
-            st.session_state.submitted = False
-            st.session_state.selected_answer = None
-else:
-    st.balloons()
-    st.success(f"게임 끝! 총 {st.session_state.score}문제를 맞혔어요.")
-    st.write("다시 도전해 보세요!")
-    if st.button("다시 시작하기", use_container_width=True):
-        start_game()
+with bts_tab:
+    render_bts_page()
