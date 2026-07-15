@@ -1,4 +1,5 @@
 import random
+from pathlib import Path
 
 import streamlit as st
 
@@ -105,8 +106,9 @@ def render_bts_page():
     st.write("BTS는 한국의 아주 유명한 음악 그룹입니다.")
     st.write("멋진 음악, 화려한 춤, 그리고 따뜻한 메시지로 많은 사람들에게 사랑받고 있어요.")
 
+    banner_path = Path(__file__).parent / "images" / "bts_banner.jpg"
     st.image(
-        "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=1200&q=80",
+        str(banner_path),
         caption="BTS의 특별한 무대",
         use_container_width=True,
     )
@@ -120,18 +122,19 @@ def render_bts_page():
 
     st.subheader("🌟 멤버")
     members = [
-        ("RM", "리더이자 랩을 맡아요.", "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=600&q=80"),
-        ("진", "부드러운 목소리로 노래해요.", "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=600&q=80"),
-        ("슈가", "재치 있는 랩과 멋진 표현을 해요.", "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80"),
-        ("제이홉", "에너지 넘치는 춤과 노래를 보여줘요.", "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80"),
-        ("지민", "유연한 춤과 강한 분위기를 보여줘요.", "https://images.unsplash.com/photo-1498036882173-b41c28a8ba34?auto=format&fit=crop&w=600&q=80"),
-        ("뷔", "차분하면서도 특별한 매력을 보여줘요.", "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80"),
-        ("정국", "높은 음역대와 열정적인 무대를 보여줘요.", "https://images.unsplash.com/photo-1485579149621-3123dd979885?auto=format&fit=crop&w=600&q=80"),
+        ("RM", "리더이자 랩을 맡아요.", "rm.jpg"),
+        ("진", "부드러운 목소리로 노래해요.", "jin.jpg"),
+        ("슈가", "재치 있는 랩과 멋진 표현을 해요.", "suga.jpg"),
+        ("제이홉", "에너지 넘치는 춤과 노래를 보여줘요.", "jhope.jpg"),
+        ("지민", "유연한 춤과 강한 분위기를 보여줘요.", "jimin.jpg"),
+        ("뷔", "차분하면서도 특별한 매력을 보여줘요.", "v.jpg"),
+        ("정국", "높은 음역대와 열정적인 무대를 보여줘요.", "jungkook.jpg"),
     ]
 
-    for name, role, image_url in members:
+    for name, role, image_file in members:
+        image_path = Path(__file__).parent / "images" / image_file
         with st.container():
-            st.image(image_url, width=220)
+            st.image(str(image_path), width=220)
             st.write(f"**{name}**: {role}")
 
     st.subheader("🎵 대표곡")
