@@ -37,13 +37,16 @@ def build_options(correct_question):
 
 
 def submit_answer():
-    if st.session_state.selected_answer is None:
+    answer_key = f"answer_{st.session_state.current_index}"
+    selected_answer = st.session_state.get(answer_key)
+
+    if selected_answer is None:
         st.session_state.feedback = "답을 선택해 주세요!"
         st.session_state.submitted = False
         return
 
     question = st.session_state.questions[st.session_state.current_index]
-    if st.session_state.selected_answer == question["meaning"]:
+    if selected_answer == question["meaning"]:
         st.session_state.score += 1
         st.session_state.feedback = "정답입니다! 😀"
         st.session_state.last_correct = True
@@ -78,7 +81,8 @@ if st.session_state.current_index < len(st.session_state.questions):
     st.write(f"예문: {question['example']}")
 
     options = build_options(question)
-    st.radio("뜻을 고르세요", options=options, key="selected_answer", index=None)
+    answer_key = f"answer_{st.session_state.current_index}"
+    st.radio("뜻을 고르세요", options=options, key=answer_key, index=None)
 
     if not st.session_state.submitted:
         if st.button("정답 확인", use_container_width=True):
